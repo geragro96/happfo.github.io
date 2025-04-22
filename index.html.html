@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Happy Food - Ensaladas y Sándwiches</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0fff0;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #76c893;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            margin: 10px 0;
+        }
+        .menu {
+            padding: 20px;
+        }
+        .menu h2 {
+            color: #4caf50;
+        }
+        .form-section {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin: 5px 0;
+        }
+        .submit-btn {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        .submit-btn:hover {
+            background-color: #45a049;
+        }
+        footer {
+            background-color: #76c893;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        .logo {
+            display: block;
+            margin: 0 auto 10px;
+            width: 150px;
+        }
+        input[type="text"], input[type="tel"] {
+            padding: 8px;
+            width: 100%;
+            max-width: 400px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <img src="logo.png" alt="Logo de Happy Food" class="logo">
+    <h1>Happy Food</h1>
+    <p>Tu lugar de ensaladas y sándwiches personalizados</p>
+</header>
+
+<div class="menu">
+    <h2>Personaliza tu pedido</h2>
+
+    <form id="pedidoForm">
+        <div class="form-section">
+            <h3>Información del cliente</h3>
+            <label>Nombre:
+                <input type="text" id="clienteNombre" required>
+            </label>
+            <label>Dirección:
+                <input type="text" id="clienteDireccion" required>
+            </label>
+            <label>Teléfono:
+                <input type="tel" id="clienteTelefono" required>
+            </label>
+        </div>
+
+        <div class="form-section">
+            <h3>Elige tu base</h3>
+            <label><input type="radio" name="base" value="Ensalada" required> Ensalada</label>
+            <label><input type="radio" name="base" value="Sándwich"> Sándwich</label>
+        </div>
+
+        <div class="form-section">
+            <h3>Ingredientes</h3>
+            <label><input type="checkbox" name="ingredientes" value="Lechuga"> Lechuga</label>
+            <label><input type="checkbox" name="ingredientes" value="Tomate"> Tomate</label>
+            <label><input type="checkbox" name="ingredientes" value="Pollo"> Pollo</label>
+            <label><input type="checkbox" name="ingredientes" value="Queso"> Queso</label>
+            <label><input type="checkbox" name="ingredientes" value="Aguacate"> Aguacate</label>
+            <label><input type="checkbox" name="ingredientes" value="Pepino"> Pepino</label>
+        </div>
+
+        <div class="form-section">
+            <h3>Aderezo</h3>
+            <label><input type="radio" name="aderezo" value="Ranch" required> Ranch</label>
+            <label><input type="radio" name="aderezo" value="Cítrico"> Cítrico</label>
+            <label><input type="radio" name="aderezo" value="Mostaza y miel"> Mostaza y miel</label>
+        </div>
+
+        <button type="button" class="submit-btn" onclick="enviarPedido()">Enviar por WhatsApp</button>
+        <button type="button" class="submit-btn" onclick="enviarPedidoEmail()">Enviar por Email</button>
+    </form>
+</div>
+
+<footer>
+    © 2025 Happy Food
+</footer>
+
+<script>
+    function getDatosCliente() {
+        const nombre = document.getElementById('clienteNombre').value.trim();
+        const direccion = document.getElementById('clienteDireccion').value.trim();
+        const telefono = document.getElementById('clienteTelefono').value.trim();
+
+        if (!nombre || !direccion || !telefono) {
+            alert("Por favor llena tus datos personales.");
+            return null;
+        }
+
+        return { nombre, direccion, telefono };
+    }
+
+    function getResumenPedido() {
+        const base = document.querySelector('input[name="base"]:checked')?.value;
+        const aderezo = document.querySelector('input[name="aderezo"]:checked')?.value;
+        const ingredientes = Array.from(document.querySelectorAll('input[name="ingredientes"]:checked'))
+                                  .map(el => el.value);
+
+        if (!base || !aderezo) {
+            alert("Por favor selecciona una base y un aderezo.");
+            return null;
+        }
+
+        return {
+            base,
+            aderezo,
+            ingredientes
+        };
+    }
+
+    function enviarPedido() {
+        const cliente = getDatosCliente();
+        const pedido = getResumenPedido();
+        if (!cliente || !pedido) return;
+
+        const mensaje = `Hola! Quiero hacer un pedido:%0A%0A` +
+                        `Nombre: ${cliente.nombre}%0A` +
+                        `Dirección: ${cliente.direccion}%0A` +
+                        `Teléfono: ${cliente.telefono}%0A%0A` +
+                        `Base: ${pedido.base}%0A` +
+                        `Ingredientes: ${pedido.ingredientes.length ? pedido.ingredientes.join(", ") : "Ninguno"}%0A` +
+                        `Aderezo: ${pedido.aderezo}`;
+
+        const numeroWhatsApp = "526565626699"; // <-- Reemplaza con tu número
+        const url = `https://wa.me/${numeroWhatsApp}?text=${mensaje}`;
+
+        window.open(url, '_blank');
+    }
+
+    function enviarPedidoEmail() {
+        const cliente = getDatosCliente();
+        const pedido = getResumenPedido();
+        if (!cliente || !pedido) return;
+
+        const mensaje = `Hola! Quiero hacer un pedido:%0A%0A` +
+                        `Nombre: ${cliente.nombre}%0A` +
+                        `Dirección: ${cliente.direccion}%0A` +
+                        `Teléfono: ${cliente.telefono}%0A%0A` +
+                        `Base: ${pedido.base}%0A` +
+                        `Ingredientes: ${pedido.ingredientes.length ? pedido.ingredientes.join(", ") : "Ninguno"}%0A` +
+                        `Aderezo: ${pedido.aderezo}`;
+
+        const correoDestino = "gerardo.guerrero.morales96@gmail.com"; // <-- Reemplaza con tu correo
+        const asunto = "Nuevo pedido de Happy Food";
+        const mailtoLink = `mailto:${correoDestino}?subject=${encodeURIComponent(asunto)}&body=${mensaje}`;
+
+        window.location.href = mailtoLink;
+    }
+</script>
+
+</body>
+</html>
